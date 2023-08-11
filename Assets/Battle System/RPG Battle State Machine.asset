@@ -1,0 +1,275 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &-6955924386761151770
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5b88ddc74cd98464ea3b8e0345c79de8, type: 3}
+  m_Name: Turn Start
+  m_EditorClassIdentifier: 
+  _name: Turn Start
+  guid: 123c9d599c5c07a40a09d4ad0b2848ad
+  _nextNodes:
+  - _nextState: {fileID: 7113116067497457879}
+    _conditions:
+    - targetName: OnStep
+  _position: {x: 272.80002, y: 102.399994}
+  _states:
+  - rid: 8917552964464017410
+  _stateMachine: {fileID: 11400000}
+  references:
+    version: 2
+    RefIds:
+    - rid: 8917552964464017410
+      type: {class: TurnStart, ns: , asm: Assembly-CSharp}
+--- !u!114 &-6893403791618112226
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5b88ddc74cd98464ea3b8e0345c79de8, type: 3}
+  m_Name: Skill Action
+  m_EditorClassIdentifier: 
+  _name: Skill Action
+  guid: 39b0c08a76c48d94d97c1e0a12a9163d
+  _nextNodes:
+  - _nextState: {fileID: 1838567986263205684}
+    _conditions:
+    - targetName: OnStep
+  _position: {x: 273, y: 331}
+  _states:
+  - rid: 8917552964464017413
+  _stateMachine: {fileID: 11400000}
+  references:
+    version: 2
+    RefIds:
+    - rid: 8917552964464017413
+      type: {class: SkillAction, ns: , asm: Assembly-CSharp}
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6f47ae440d7766242b106006d1993f36, type: 3}
+  m_Name: RPG Battle State Machine
+  m_EditorClassIdentifier: 
+  _entryNode: {fileID: 3719840866117681403}
+  _nodes:
+  - {fileID: 3719840866117681403}
+  - {fileID: 104485685829539584}
+  - {fileID: 1838567986263205684}
+  - {fileID: 168722005739526440}
+  - {fileID: 2708585440077932266}
+  - {fileID: -6955924386761151770}
+  - {fileID: 7113116067497457879}
+  - {fileID: 4764082480117182820}
+  - {fileID: -6893403791618112226}
+  _values:
+  - _name: OnStep
+    _currentValue: 0
+  - _name: OnBack
+    _currentValue: 0
+--- !u!114 &104485685829539584
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5b88ddc74cd98464ea3b8e0345c79de8, type: 3}
+  m_Name: Battle Entry
+  m_EditorClassIdentifier: 
+  _name: Battle Entry
+  guid: 29799e4582b806245a0d374631196888
+  _nextNodes:
+  - _nextState: {fileID: -6955924386761151770}
+    _conditions:
+    - targetName: OnStep
+  _position: {x: 560.80005, y: 24}
+  _states:
+  - rid: 8917552964464017409
+  _stateMachine: {fileID: 11400000}
+  references:
+    version: 2
+    RefIds:
+    - rid: 8917552964464017409
+      type: {class: BattleStart, ns: , asm: Assembly-CSharp}
+--- !u!114 &168722005739526440
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5b88ddc74cd98464ea3b8e0345c79de8, type: 3}
+  m_Name: Battle Exit
+  m_EditorClassIdentifier: 
+  _name: Battle Exit
+  guid: c9d1ae169af934a41a05216f5f3a801d
+  _nextNodes:
+  - _nextState: {fileID: 2708585440077932266}
+    _conditions:
+    - targetName: OnStep
+  _position: {x: 574.4, y: 401.59998}
+  _states:
+  - rid: 8917552964464017415
+  _stateMachine: {fileID: 11400000}
+  references:
+    version: 2
+    RefIds:
+    - rid: 8917552964464017415
+      type: {class: BattleEnd, ns: , asm: Assembly-CSharp}
+--- !u!114 &1838567986263205684
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5b88ddc74cd98464ea3b8e0345c79de8, type: 3}
+  m_Name: Turn End
+  m_EditorClassIdentifier: 
+  _name: Turn End
+  guid: 0a430d725a9a35c4cad2e1b52c8c5e31
+  _nextNodes:
+  - _nextState: {fileID: 168722005739526440}
+    _conditions:
+    - targetName: OnStep
+  - _nextState: {fileID: -6955924386761151770}
+    _conditions:
+    - targetName: OnBack
+  _position: {x: 273, y: 402}
+  _states:
+  - rid: 8917552964464017414
+  _stateMachine: {fileID: 11400000}
+  references:
+    version: 2
+    RefIds:
+    - rid: 8917552964464017414
+      type: {class: TurnEnd, ns: , asm: Assembly-CSharp}
+--- !u!114 &2708585440077932266
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5b88ddc74cd98464ea3b8e0345c79de8, type: 3}
+  m_Name: Field Mode
+  m_EditorClassIdentifier: 
+  _name: Field Mode
+  guid: 4d18fac23f3faee4085a8c07f62e7e6b
+  _nextNodes:
+  - _nextState: {fileID: 104485685829539584}
+    _conditions:
+    - targetName: OnStep
+  _position: {x: 272.39996, y: 24.720001}
+  _states:
+  - rid: 8917552964464017408
+  _stateMachine: {fileID: 11400000}
+  references:
+    version: 2
+    RefIds:
+    - rid: 8917552964464017408
+      type: {class: FieldMode, ns: , asm: Assembly-CSharp}
+--- !u!114 &3719840866117681403
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 930ca894c277fe24bae649ff44bd6f6c, type: 3}
+  m_Name: State Machine Node
+  m_EditorClassIdentifier: 
+  _name: State Machine Node
+  guid: 59b7ee0e4c78c1445b7d3d0bbf9d8921
+  _nextNodes:
+  - _nextState: {fileID: 2708585440077932266}
+    _conditions: []
+  _position: {x: 57, y: -13}
+  _states: []
+  _stateMachine: {fileID: 11400000}
+  references:
+    version: 2
+    RefIds: []
+--- !u!114 &4764082480117182820
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5b88ddc74cd98464ea3b8e0345c79de8, type: 3}
+  m_Name: Target Select
+  m_EditorClassIdentifier: 
+  _name: Target Select
+  guid: d53e25acffe67db42a259781067f80bb
+  _nextNodes:
+  - _nextState: {fileID: -6893403791618112226}
+    _conditions:
+    - targetName: OnStep
+  - _nextState: {fileID: 7113116067497457879}
+    _conditions:
+    - targetName: OnBack
+  _position: {x: 272.80002, y: 258}
+  _states:
+  - rid: 8917552964464017412
+  _stateMachine: {fileID: 11400000}
+  references:
+    version: 2
+    RefIds:
+    - rid: 8917552964464017412
+      type: {class: SelectTarget, ns: , asm: Assembly-CSharp}
+--- !u!114 &7113116067497457879
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5b88ddc74cd98464ea3b8e0345c79de8, type: 3}
+  m_Name: Skill Select
+  m_EditorClassIdentifier: 
+  _name: Skill Select
+  guid: d481b2b00ec38be45ba5aae4564cc710
+  _nextNodes:
+  - _nextState: {fileID: 4764082480117182820}
+    _conditions:
+    - targetName: OnStep
+  _position: {x: 272.80002, y: 178}
+  _states:
+  - rid: 8917552964464017411
+  _stateMachine: {fileID: 11400000}
+  references:
+    version: 2
+    RefIds:
+    - rid: 8917552964464017411
+      type: {class: SelectSkill, ns: , asm: Assembly-CSharp}
