@@ -9,6 +9,12 @@ public class CommandSelectObserver<T> : CommandSelectObservable<T> where T : cla
     private bool _isEnabled = true;
     private readonly List<T> _selectedObjects = new List<T>(); // 選択済みオブジェクトリスト
 
+    public IReadOnlyList<T> Selectables => _selectables;
+    public int HoverIndex => _hoverIndex;
+    public bool IsDuplicatable => _isDuplicatable;
+    public bool IsEnable => _isEnabled;
+    public IReadOnlyList<T> SelectedObjects => _selectedObjects;
+
     public T HoverObject // カーソル中のオブジェクト
     {
         get
@@ -17,12 +23,6 @@ public class CommandSelectObserver<T> : CommandSelectObservable<T> where T : cla
             else throw new ArgumentException($"範囲外が指定されました。\nIndex: {_hoverIndex}");
         }
     }
-
-    public IReadOnlyList<T> Selectables => _selectables;
-    public int HoverIndex => _hoverIndex;
-    public bool IsDuplicatable => _isDuplicatable;
-    public bool IsEnable => _isEnabled;
-    public IReadOnlyList<T> SelectedObjects => _selectedObjects;
 
     public CommandSelectObserver()
     {
