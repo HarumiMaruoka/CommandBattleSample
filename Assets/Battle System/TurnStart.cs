@@ -12,8 +12,7 @@ public class TurnStart : StateBehavior
     {
         Step();
     }
-    // 演出を再生する
-    private void PlayEffect() { }
+
     // スキル選択に遷移する
     private void Step()
     {

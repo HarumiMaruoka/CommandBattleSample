@@ -1,10 +1,11 @@
 public static class DamageCalculater
 {
-    public static void DamageCalculate(AttackData attackData, Actor victim)
+    public static int DamageCalculate(AttackData attackData, Actor victim)
     {
         var damageValue = attackData.AttackPower;
 
-        victim.ResourceStatus.Damage(damageValue);
+        victim.ResourceStatus.TryDamage(damageValue);
+        return damageValue;
     }
 }
 public struct AttackData

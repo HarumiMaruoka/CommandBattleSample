@@ -14,7 +14,7 @@ public class SkillAction : StateBehavior
     }
     // 演出を再生する
     private void PlayEffect() { }
-    // ターン終了に遷移する
+    // 死亡判定に遷移する
     private void Step()
     {
         if (Input.GetKeyDown(KeyCode.Return)) _controller.StepTrigger();

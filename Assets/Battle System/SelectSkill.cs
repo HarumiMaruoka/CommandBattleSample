@@ -12,11 +12,7 @@ public class SelectSkill : StateBehavior
     {
         Step();
     }
-    // スキルを選択する
-    private void SkillSelection() { }
-    // バトルコントローラーに選択したスキルを教える
-    private void SendSelectedSkillToBattleController() { }
-    // ターゲット選択に遷移する。
+    // ターゲット選択に遷移する
     private void Step()
     {
         if (Input.GetKeyDown(KeyCode.Return)) _controller.StepTrigger();

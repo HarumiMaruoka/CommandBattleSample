@@ -1,5 +1,5 @@
 /// <summary>
-/// 攻撃力や防御力等のステータスを管理するクラス。
+/// 攻撃力や防御力等のステータスを管理するクラス。A
 /// </summary>
 public class ActorAttributeStatus
 {

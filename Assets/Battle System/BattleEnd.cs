@@ -12,8 +12,6 @@ public class BattleEnd : StateBehavior
     {
         Step();
     }
-    // 演出を再生する
-    private void PlayEffect() { }
     // フィールドモードに遷移する
     private void Step()
     {

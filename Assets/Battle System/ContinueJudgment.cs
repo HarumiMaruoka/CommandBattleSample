@@ -1,6 +1,8 @@
+// æ—¥æœ¬èªå¯¾å¿œ
+
 using UnityEngine;
 
-public class TurnEnd : StateBehavior
+public class ContinueJudgment : StateBehavior
 {
     private StateMachineController _controller;
 
@@ -13,12 +15,12 @@ public class TurnEnd : StateBehavior
         Step();
         Back();
     }
-    // í“¬I—¹‚É‘JˆÚ‚·‚é
+    // Turn Endã¸
     private void Step()
     {
         if (Input.GetKeyDown(KeyCode.Return)) _controller.StepTrigger();
     }
-    // ƒ^[ƒ“ŠJn‚É–ß‚é
+    // Battle Exitã¸
     private void Back()
     {
         if (Input.GetKeyDown(KeyCode.Escape)) _controller.BackTrigger();

@@ -42,7 +42,7 @@ MonoBehaviour:
   _name: Skill Action
   guid: 39b0c08a76c48d94d97c1e0a12a9163d
   _nextNodes:
-  - _nextState: {fileID: 1838567986263205684}
+  - _nextState: {fileID: 244058414789586007}
     _conditions:
     - targetName: OnStep
   _position: {x: 273, y: 331}
@@ -77,6 +77,8 @@ MonoBehaviour:
   - {fileID: 7113116067497457879}
   - {fileID: 4764082480117182820}
   - {fileID: -6893403791618112226}
+  - {fileID: 244058414789586007}
+  - {fileID: 1651490066723154858}
   _values:
   - _name: OnStep
     _currentValue: 0
@@ -100,7 +102,7 @@ MonoBehaviour:
   - _nextState: {fileID: -6955924386761151770}
     _conditions:
     - targetName: OnStep
-  _position: {x: 560.80005, y: 24}
+  _position: {x: 608, y: 25}
   _states:
   - rid: 8917552964464017409
   _stateMachine: {fileID: 11400000}
@@ -127,7 +129,7 @@ MonoBehaviour:
   - _nextState: {fileID: 2708585440077932266}
     _conditions:
     - targetName: OnStep
-  _position: {x: 574.4, y: 401.59998}
+  _position: {x: 608, y: 607}
   _states:
   - rid: 8917552964464017415
   _stateMachine: {fileID: 11400000}
@@ -136,6 +138,57 @@ MonoBehaviour:
     RefIds:
     - rid: 8917552964464017415
       type: {class: BattleEnd, ns: , asm: Assembly-CSharp}
+--- !u!114 &244058414789586007
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5b88ddc74cd98464ea3b8e0345c79de8, type: 3}
+  m_Name: Death Process
+  m_EditorClassIdentifier: 
+  _name: Death Process
+  guid: dbc2ae2fa75f26447b780533cca935b5
+  _nextNodes:
+  - _nextState: {fileID: 1651490066723154858}
+    _conditions:
+    - targetName: OnStep
+  _position: {x: 272, y: 426}
+  _states: []
+  _stateMachine: {fileID: 11400000}
+  references:
+    version: 2
+    RefIds: []
+--- !u!114 &1651490066723154858
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5b88ddc74cd98464ea3b8e0345c79de8, type: 3}
+  m_Name: Continue Judgment
+  m_EditorClassIdentifier: 
+  _name: Continue Judgment
+  guid: 32b50c76973cdc54598c0339caf55541
+  _nextNodes:
+  - _nextState: {fileID: 1838567986263205684}
+    _conditions:
+    - targetName: OnStep
+  - _nextState: {fileID: 168722005739526440}
+    _conditions:
+    - targetName: OnBack
+  _position: {x: 272, y: 516}
+  _states: []
+  _stateMachine: {fileID: 11400000}
+  references:
+    version: 2
+    RefIds: []
 --- !u!114 &1838567986263205684
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -151,13 +204,10 @@ MonoBehaviour:
   _name: Turn End
   guid: 0a430d725a9a35c4cad2e1b52c8c5e31
   _nextNodes:
-  - _nextState: {fileID: 168722005739526440}
-    _conditions:
-    - targetName: OnStep
   - _nextState: {fileID: -6955924386761151770}
     _conditions:
-    - targetName: OnBack
-  _position: {x: 273, y: 402}
+    - targetName: OnStep
+  _position: {x: 273, y: 607}
   _states:
   - rid: 8917552964464017414
   _stateMachine: {fileID: 11400000}

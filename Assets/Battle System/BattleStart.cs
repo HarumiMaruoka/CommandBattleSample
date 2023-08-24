@@ -12,8 +12,6 @@ public class BattleStart : StateBehavior
     {
         Step();
     }
-    // 演出を再生する
-    private void PlayEffect() { }
     // ターン開始に遷移する
     private void Step()
     {

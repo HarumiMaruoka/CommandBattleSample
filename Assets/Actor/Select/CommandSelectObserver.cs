@@ -9,6 +9,8 @@ public class CommandSelectObserver<T> : CommandSelectObservable<T> where T : cla
     private bool _isEnabled = true;
     private readonly List<T> _selectedObjects = new List<T>(); // 選択済みオブジェクトリスト
 
+    public event Action<T> OnSelected;
+
     public IReadOnlyList<T> Selectables => _selectables;
     public int HoverIndex => _hoverIndex;
     public bool IsDuplicatable => _isDuplicatable;
@@ -37,7 +39,7 @@ public class CommandSelectObserver<T> : CommandSelectObservable<T> where T : cla
     /// <param name="selectables"> 選択可能オブジェクトリスト </param>
     public void Initialize(IReadOnlyList<T> selectables)
     {
-        _selectables = selectables;
+        _selectables = selectables; _hoverIndex = 0;
     }
 
     public void Enable()
@@ -51,19 +53,27 @@ public class CommandSelectObserver<T> : CommandSelectObservable<T> where T : cla
             _selectables != null && _selectables.Count != 0 &&
             _hoverIndex >= 0 && _hoverIndex < _selectables.Count;
     }
+    protected bool IsInIndex(int index)
+    {
+        return
+            _selectables != null && _selectables.Count != 0 &&
+            index >= 0 && index < _selectables.Count;
+    }
     private T OnDetermination()
     {
-        if (!_isEnabled) return null;
+        if (!_isEnabled) throw new ArgumentException("Enabledがfalseです。");
 
         var select = HoverObject;
         if (_isDuplicatable) // 重複して選択可能
         {
             _selectedObjects.Add(select);
+            OnSelected.Invoke(select);
             return select;
         }
         else if (!_selectedObjects.Contains(select)) // 重複不可の場合、既に含まれているかどうかチェック
         {
             _selectedObjects.Add(select);
+            OnSelected.Invoke(select);
             return select;
         }
 
@@ -72,11 +82,21 @@ public class CommandSelectObserver<T> : CommandSelectObservable<T> where T : cla
     private OnChangedSelectedData OnNextSelect()
     {
         var selectData = new OnChangedSelectedData();
-        if (!_isEnabled) return selectData;
+        if (!_isEnabled) throw new ArgumentException("Enabledがfalseです。");
 
         selectData.oldObj = _selectables[_hoverIndex];
-        _hoverIndex++;
-        if (_hoverIndex >= _selectables.Count) _hoverIndex = 0;
+        int depthCounter = 0;
+        do
+        {
+            _hoverIndex++;
+            if (_hoverIndex >= _selectables.Count) _hoverIndex = 0;
+
+            // 10回くらいループしたらArgumentExceptionを送出する。無限ループ防止。
+            if (depthCounter == 10) throw new ArgumentException(""); // ToDo: いい感じのエラーメッセージをGPT君に考えてもらう。
+            depthCounter++;
+
+        } while (!_isDuplicatable && _selectedObjects.Contains(_selectables[_hoverIndex]));
+        // 重複選択不可の場合、既に選択済みであればさらに次のやつを選択する。
 
         selectData.newObj = _selectables[_hoverIndex];
 
@@ -85,11 +105,21 @@ public class CommandSelectObserver<T> : CommandSelectObservable<T> where T : cla
     private OnChangedSelectedData OnPreviousSelect()
     {
         var selectData = new OnChangedSelectedData();
-        if (!_isEnabled) return selectData;
+        if (!_isEnabled) throw new ArgumentException("Enabledがfalseです。");
 
         selectData.oldObj = _selectables[_hoverIndex];
-        _hoverIndex--;
-        if (_hoverIndex < 0) _hoverIndex = _selectables.Count - 1;
+        int depthCounter = 0;
+        do
+        {
+            _hoverIndex--;
+            if (_hoverIndex < 0) _hoverIndex = _selectables.Count - 1;
+
+            // 10回くらいループしたらArgumentExceptionを送出する。無限ループ防止。
+            if (depthCounter == 10) throw new ArgumentException(""); // ToDo: いい感じのエラーメッセージをGPT君に考えてもらう。
+            depthCounter++;
+
+        } while (!_isDuplicatable && _selectedObjects.Contains(_selectables[_hoverIndex]));
+        // 重複選択不可の場合、既に選択済みであればさらに次のやつを選択する。
 
         selectData.newObj = _selectables[_hoverIndex];
 
@@ -97,7 +127,7 @@ public class CommandSelectObserver<T> : CommandSelectObservable<T> where T : cla
     }
     private void Clear(Action<T> actionTaken)
     {
-        if (!_isEnabled) return;
+        if (!_isEnabled) throw new ArgumentException("Enabledがfalseです。");
 
         foreach (var selected in _selectedObjects)
         {
@@ -138,7 +168,7 @@ public class CommandSelectObservable<T> where T : class
     { return PreviousInput.Invoke(); }
     public T ExecuteDetermination()
     { return DeterminationInput?.Invoke(); }
-    public void ExecuteCancel(Action<T> actionTaken) // Action taken とは 「処置内容」の直訳(Google翻訳)
+    public void ExecuteCancel(Action<T> actionTaken = null) // Action taken とは 「処置内容」の直訳(Google翻訳)
     {
         CancelInput?.Invoke(actionTaken);
     }

@@ -1,6 +1,8 @@
+// æ—¥æœ¬èªå¯¾å¿œ
 using UnityEngine;
 
-public class TurnEnd : StateBehavior
+// æ­»äº¡å‡¦ç†
+public class DeathProcess : StateBehavior
 {
     private StateMachineController _controller;
 
@@ -11,16 +13,10 @@ public class TurnEnd : StateBehavior
     public override void Update()
     {
         Step();
-        Back();
     }
-    // í“¬I—¹‚É‘JˆÚ‚·‚é
+    // ç¶™ç¶šåˆ¤å®šã‚¹ãƒ†ãƒ¼ãƒˆã¸
     private void Step()
     {
         if (Input.GetKeyDown(KeyCode.Return)) _controller.StepTrigger();
-    }
-    // ƒ^[ƒ“ŠJn‚É–ß‚é
-    private void Back()
-    {
-        if (Input.GetKeyDown(KeyCode.Escape)) _controller.BackTrigger();
     }
 }
