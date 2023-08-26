@@ -37,13 +37,6 @@ public class SkillUnlockDataStore
 // 特定の味方キャラがどのスキルをどのレベルで使用可能になるか表現するデータ。
 public struct CharacterSkillUnlockData
 {
-    public CharacterSkillUnlockData(int characterID, int skillID, int unlockLevel)
-    {
-        _characterID = characterID;
-        _skillID = skillID;
-        _unlockLevel = unlockLevel;
-    }
-
     public CharacterSkillUnlockData(string[] splitedStr)
     {
         _characterID = int.Parse(splitedStr[0]);

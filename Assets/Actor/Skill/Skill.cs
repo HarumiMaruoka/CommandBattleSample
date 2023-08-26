@@ -15,7 +15,7 @@ public abstract class Skill
     public Skill(string[] splitedStr)
     {
         _name = splitedStr[0];
-        _targetType = splitedStr[1].ToSelectableTargetType();
+        _targetType = (SelectableTargetType)int.Parse(splitedStr[1]);
         _targetingType = splitedStr[2].ToTargetingType();
         _effectTime = float.Parse(splitedStr[3]);
         _selectCount = int.Parse(splitedStr[4]);
@@ -25,6 +25,10 @@ public abstract class Skill
     private readonly SelectableTargetType _targetType;
     private readonly TargetingType _targetingType;
 
+    private readonly TargetSelecter _targetSelecter = new TargetSelecter();
+    protected readonly float _effectTime; // このEffectの再生時間
+    protected float _effectTimer = 0f; // Effectを再生開始してからの経過時間
+
     // 範囲攻撃の際は半径を表す。
     // 複数選択やランダム選択攻撃に関しては攻撃対象の数を表現する。
     // それ以外の値では利用されない。
@@ -33,12 +37,11 @@ public abstract class Skill
     public string Name => _name;
     public SelectableTargetType TargetType => _targetType;
     public TargetingType TargetingType => _targetingType;
+    public TargetSelecter TargetSelecter => _targetSelecter;
     public int SelectCount => _selectCount;
 
     public event Action OnEffectComplete;
 
-    protected readonly float _effectTime; // このEffectの再生時間
-    protected float _effectTimer = 0f; // Effectを再生開始してからの経過時間
 
     // 効果を実装する
     // ToDo: とりあえず、攻撃、全体攻撃、防御を実装しよう
@@ -91,35 +94,24 @@ public class TargetSelecter : CommandSelectObserver<Actor>
         _allies = allies; _enemies = enemies;
     }
 
-    public List<Actor> GetSelectables()
+    public List<Actor> GetSelectables() // このスキルが選択可能なキャラの抽出。
     {
         List<Actor> result = new List<Actor>();
 
-        switch (_skill.TargetType)
-        {
-            case SelectableTargetType.SelfOnly:
-                result.Add(_myself);
-                break;
-            case SelectableTargetType.AllyIncludingSelf:
-                result.Add(_myself);
-                result.AddRange(_allies);
-                break;
-            case SelectableTargetType.AllyExcludingSelf:
-                result.AddRange(_allies);
-                break;
-            case SelectableTargetType.EnemyOnly:
-                result.AddRange(_enemies);
-                break;
-            case SelectableTargetType.AllIncludingSelf:
-                result.Add(_myself);
-                result.AddRange(_allies);
-                result.AddRange(_enemies);
-                break;
-            case SelectableTargetType.AllExcludingSelf:
-                result.AddRange(_allies);
-                result.AddRange(_enemies);
-                break;
-        }
+        if (_skill.TargetType.HasFlag(SelectableTargetType.Myself))
+        { result.Add(_myself); }
+        if (_skill.TargetType.HasFlag(SelectableTargetType.Ally))
+        { result.AddRange(_allies); }
+        if (_skill.TargetType.HasFlag(SelectableTargetType.Enemy))
+        { result.AddRange(_enemies); }
+
+        result.RemoveAll(actor =>
+        // 選択対象が「生存しているアクター」であり、かつアクターが死亡場合、アクターを除外する
+        (_skill.TargetType.HasFlag(SelectableTargetType.Alive) && actor.IsDead) ||
+        // 選択対象が「死亡しているアクター」であり、かつアクターが生きている場合、アクターを除外する
+        (_skill.TargetType.HasFlag(SelectableTargetType.Death) && !actor.IsDead) ||
+        // もし選択対象が「状態異常を持つアクター」であり、かつアクターが状態異常を持っていない場合、アクターを除外する
+        (_skill.TargetType.HasFlag(SelectableTargetType.AbnormalStatus) && actor.StatusEffect.CurrentStatus != StatusEffectType.None));
 
         return result;
     }
@@ -153,9 +145,31 @@ public class TargetSelecter : CommandSelectObserver<Actor>
                 if (!_selectedActor.Contains(HoverObject)) result.Add(HoverObject);
                 break;
             case TargetingType.RandomOverlapping: // ランダム（重複可能）
-                throw new NotImplementedException(); // 未定義
+                {
+                    Random random = new Random();
+
+                    for (int i = 0; i < _skill.SelectCount; i++)
+                    {
+                        int randomIndex = random.Next(Selectables.Count); // ランダムなインデックスを生成
+                        result.Add(Selectables[randomIndex]); // ランダムなアクターを選択結果に追加
+                    }
+                    break;
+                }
             case TargetingType.RandomUnique: // ランダム（重複不可）
-                throw new NotImplementedException(); // 未定義
+                {
+                    Random random = new Random();
+                    int numToSelect = Math.Min(_skill.SelectCount, Selectables.Count); // 選択するアクターの個数を制限
+
+                    List<Actor> availableActors = new List<Actor>(Selectables); // 選択可能なアクターのリストをコピー
+                    for (int i = 0; i < numToSelect; i++)
+                    {
+                        int randomIndex = random.Next(availableActors.Count); // ランダムなインデックスを生成
+                        result.Add(availableActors[randomIndex]); // ランダムなアクターを選択結果に追加
+
+                        availableActors.RemoveAt(randomIndex); // 選択したアクターを選択可能リストから削除
+                    }
+                    break;
+                }
         }
 
         return result;
@@ -183,20 +197,21 @@ public class TargetSelecter : CommandSelectObserver<Actor>
 /// <summary>
 /// 誰を選択できるか（選択可能な対象の種類）
 /// </summary>
+[Flags]
 public enum SelectableTargetType
 {
-    /// <summary> 自分のみ </summary>
-    SelfOnly,
-    /// <summary> 自分を含む味方のみ </summary>
-    AllyIncludingSelf,
-    /// <summary> 自分を除く味方のみ </summary>
-    AllyExcludingSelf,
-    /// <summary> 敵のみ </summary>
-    EnemyOnly,
-    /// <summary> 自分を含む全体（味方および敵） </summary>
-    AllIncludingSelf,
-    /// <summary> 自分を除く全体（味方および敵） </summary>
-    AllExcludingSelf,
+    // 自分
+    Myself = 1,
+    // 味方
+    Ally = 2,
+    // 敵
+    Enemy = 4,
+    // 生きているキャラ
+    Alive = 8,
+    // 死亡しているキャラ
+    Death = 16,
+    // 状態異常のキャラ
+    AbnormalStatus = 32,
 }
 /// <summary>
 /// どのように選択するか（対象の選択方法の種類）

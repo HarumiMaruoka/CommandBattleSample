@@ -5,8 +5,8 @@ using System.Collections.Generic;
 public class AllEnemyAttack : Skill
 {
     public AllEnemyAttack(string name, SelectableTargetType targetType, TargetingType targetingType,
-        float effectTime = 0, int selectCount = 1, bool isOpened = false)
-        : base(name, targetType, targetingType, effectTime, selectCount, isOpened)
+        float effectTime = 0, int selectCount = 1)
+        : base(name, targetType, targetingType, effectTime, selectCount)
     { }
     public AllEnemyAttack(string[] splitedStr) : base(splitedStr)
     { }

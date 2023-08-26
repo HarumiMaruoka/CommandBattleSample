@@ -7,8 +7,8 @@ public class SingleAttack : Skill
     private DamageEffect _damageEffect = new DamageEffect(-1f);
 
     public SingleAttack(string name, SelectableTargetType targetType, TargetingType targetingType,
-        float effectTime = 0, int selectCount = 1, bool isOpened = false)
-        : base(name, targetType, targetingType, effectTime, selectCount, isOpened)
+        float effectTime = 0, int selectCount = 1)
+        : base(name, targetType, targetingType, effectTime, selectCount)
     { }
     public SingleAttack(string[] splitedStr) : base(splitedStr) { }
 

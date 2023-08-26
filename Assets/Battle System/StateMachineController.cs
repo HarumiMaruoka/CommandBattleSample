@@ -7,11 +7,14 @@ public class StateMachineController : MonoBehaviour
     [SerializeField]
     private StateMachineRunner _runner;
     [SerializeField]
-    private Text _stateName;
+    private Text _stateName; // 現在のステート確認する用。（テスト用）
     [SerializeField, StateMachinePropety]
     private string _stepName;
     [SerializeField, StateMachinePropety]
     private string _backName;
+
+    private readonly BattleSystem _battleSystem = new BattleSystem();
+    public BattleSystem BattleSystem => _battleSystem;
 
     void Update()
     {

@@ -21,12 +21,12 @@ public class SkillDataStore
         }
     }
 
-    private Skill GetSkill(int skillID, string[] lineData)
+    private Skill GetSkill(int skillID, string[] skillData)
     {
         switch (skillID)
         {
-            case 0: return new SingleAttack(lineData);
-            case 1: return new AllEnemyAttack(lineData);
+            case 0: return new SingleAttack(skillData);
+            case 1: return new AllEnemyAttack(skillData);
             default: throw new ArgumentException($"skillIDが無効です。skillID: {skillID}");
         }
     }

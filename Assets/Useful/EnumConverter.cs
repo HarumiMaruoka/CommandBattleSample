@@ -3,19 +3,6 @@ using System;
 
 public static class EnumConverter
 {
-    public static SelectableTargetType ToSelectableTargetType(this string str)
-    {
-        return str switch
-        {
-            "SelfOnly" => SelectableTargetType.SelfOnly,
-            "AllyIncludingSelf" => SelectableTargetType.AllyIncludingSelf,
-            "AllyExcludingSelf" => SelectableTargetType.AllyExcludingSelf,
-            "EnemyOnly" => SelectableTargetType.EnemyOnly,
-            "AllIncludingSelf" => SelectableTargetType.AllIncludingSelf,
-            "AllExcludingSelf" => SelectableTargetType.AllExcludingSelf,
-            _ => throw new ArgumentException($"変換に失敗しました。 {str}"),
-        };
-    }
     public static TargetingType ToTargetingType(this string str)
     {
         return str switch
@@ -27,6 +14,16 @@ public static class EnumConverter
             "MultipleUnique" => TargetingType.MultipleUnique,
             "RandomOverlapping" => TargetingType.RandomOverlapping,
             "RandomUnique" => TargetingType.RandomUnique,
+            _ => throw new ArgumentException($"変換に失敗しました。 {str}"),
+        };
+    }
+    public static FieldType ToFieldType(this string str)
+    {
+        return str switch
+        {
+            "Forest" => FieldType.Forest,
+            "Ocean" => FieldType.Ocean,
+            "Volcano" => FieldType.Volcano,
             _ => throw new ArgumentException($"変換に失敗しました。 {str}"),
         };
     }

@@ -11,28 +11,19 @@ public class ActorSkillData
     }
     public void Initialize()
     {
+        // 最初から使用可能なスキル初期化。
+
+        // このActorが習得可能な全てのスキルとSkillUnlockDataの初期化。
         var skills = new List<Skill>();
 
         _unlockData = GameDataStore.Instance.SkillUnlockDataStore.CharacterIDToSkillUnlockData[_owner.ID];
 
         for (int i = 0; i < _unlockData.Count; i++)
         {
-            skills.Add(GameDataStore.Instance.SkillData.IDToSkill[_unlockData[i].SkillID]);
+            skills.Add(GameDataStore.Instance.SkillDataStore.IDToSkill[_unlockData[i].SkillID]);
         }
 
         _myAllSkill = skills;
-    }
-    public List<Skill> GetUsableSkills()
-    {
-        var result = new List<Skill>();
-
-        foreach (var skill in _myAllSkill)
-        {
-            // 開放済みのスキルのみ使用可能。
-            if (skill.IsOpened) result.Add(skill);
-        }
-
-        return result;
     }
 
     private readonly Actor _owner;
@@ -42,6 +33,8 @@ public class ActorSkillData
     public IReadOnlyList<CharacterSkillUnlockData> _unlockData;
     // スキル選択用のクラス
     private SkillSelector _skillSelector = new SkillSelector();
+    // 戦闘の際、利用可能なスキル。
+    private List<Skill> _activeSkills = new List<Skill>();
 
     public Actor Owner => _owner;
     public IReadOnlyList<Skill> AllSkill => _myAllSkill;

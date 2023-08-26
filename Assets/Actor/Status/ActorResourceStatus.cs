@@ -11,9 +11,6 @@ public class ActorResourceStatus
     public int Hp { get => _hp; set => _hp = value; }
     public int Mp { get => _mp; set => _mp = value; }
 
-    public int MaxHp { get => _maxHp; set => _maxHp = value; }
-    public int MaxMp { get => _maxMp; set => _maxMp = value; }
-
     public bool IsDead => _hp <= 0; // ‘Ì—Í‚ª0ˆÈ‰º‚ÌŽž‚±‚Ìactor‚ÍŽ€–S‚µ‚Ä‚¢‚éŽ–‚ð•\Œ»‚·‚éB
 
     public bool TryDamage(int value)
