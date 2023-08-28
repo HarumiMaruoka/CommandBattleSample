@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class SelectTarget : StateBehavior
+public class TargetSelectState : StateBehavior
 {
     private StateMachineController _controller;
 
@@ -8,10 +8,19 @@ public class SelectTarget : StateBehavior
     {
         _controller = _stateMachine.Runner.GetComponent<StateMachineController>();
     }
+    public override void Enter()
+    {
+        _controller.BattleSystem.StartTargetSelectMode();
+    }
     public override void Update()
     {
-        Step();
+        if (_controller.BattleSystem.TryGetSelectedTarget(out var useSkill, out var selecteds))
+            Step();
         Back();
+    }
+    public override void Exit()
+    {
+        _controller.BattleSystem.EndTargetSelectMode();
     }
     // スキルを選択する
     private void TargetSelection() { }
@@ -25,6 +34,6 @@ public class SelectTarget : StateBehavior
     // スキルアクションに遷移する
     private void Step()
     {
-        if (Input.GetKeyDown(KeyCode.Return)) _controller.StepTrigger();
+        _controller.StepTrigger();
     }
 }

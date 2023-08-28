@@ -11,11 +11,13 @@ public class GameDataStore
     private readonly ActorDataStore _actorDataStore = new ActorDataStore();
     private readonly SkillUnlockDataStore _skillUnlockDataStore = new SkillUnlockDataStore();
     private readonly LevelStatusDataStore _levelStatusDataStore = new LevelStatusDataStore();
+    private readonly AllyDataStore _allyDataStore = new AllyDataStore();
     private readonly EnemyDataStore _enemyDataStore = new EnemyDataStore();
 
     public SkillDataStore SkillDataStore => _skillDataStore;
     public ActorDataStore ActorDataStore => _actorDataStore;
     public SkillUnlockDataStore SkillUnlockDataStore => _skillUnlockDataStore;
     public LevelStatusDataStore LevelStatusDataStore => _levelStatusDataStore;
+    public AllyDataStore AllyDataStore => _allyDataStore;
     public EnemyDataStore EnemyDataStore => _enemyDataStore;
 }

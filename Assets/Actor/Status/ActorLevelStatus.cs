@@ -76,4 +76,26 @@ public class ActorLevelStatus
             return _level.CompareTo(other._level);
         }
     }
+
+    public ActorLevelStatus Clone()
+    {
+        ActorLevelStatus clonedStatus = new ActorLevelStatus(_maxExp);
+
+        // イベントのコピーはしない
+        clonedStatus.OnLevelChanged = null;
+
+        foreach (var levelData in _levelDataList)
+        {
+            clonedStatus._levelDataList.Add(new LevelData(levelData.Level, levelData.Exp));
+        }
+
+        clonedStatus._exp = _exp;
+
+        foreach (var kvp in _expToLevelCache)
+        {
+            clonedStatus._expToLevelCache[kvp.Key] = kvp.Value;
+        }
+
+        return clonedStatus;
+    }
 }

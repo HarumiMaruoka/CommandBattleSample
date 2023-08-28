@@ -5,24 +5,37 @@ using System.Linq;
 // 戦闘システムを提供する。（システムのみ。演出等は含まない。）
 public class BattleSystem
 {
-    public List<Actor> _allys { get; set; } = null;
-    public List<Actor> _enemies { get; set; } = null;
-    public List<BattleActorData> BattleActor { get; set; } = null; // 戦闘に参加している全てのキャラ
-    public Actor ActiveActor { get; set; } = null; // 行動キャラ
-    public Skill SelectedSkill { get; set; } = null; // 選択されたスキル
-    public List<Actor> SelectedActors { get; set; } = null; // スキル効果対象キャラ
+    // 味方リスト
+    private List<AllyDataStore.Ally> _allyList;
+    // 敵リスト
+    private List<EnemyDataStore.Enemy> _enemyList;
+    // 戦闘に参加している全てのキャラ
+    private List<BattleActorData> _battleActor;
+
+    public IReadOnlyList<BattleActorData> BattleActor => _battleActor; // 戦闘に参加している全てのキャラ
+    public Actor ActiveActor { get; private set; } = null; // 行動キャラ
+    public Skill SelectedSkill { get; private set; } = null; // 選択されたスキル
+    public List<Actor> SelectedTargets { get; set; } = null; // スキル効果対象キャラ
 
     public void BattleInitialize() // 戦闘開始時に呼び出す。
     {
-        // 味方、敵の準備
-        // カウントの初期設定
-        throw new NotImplementedException();
+        // 味方コレクション初期化
+        _allyList = new List<AllyDataStore.Ally>(GameDataStore.Instance.AllyDataStore.ActiveAllies);
+        // 敵コレクション初期化
+        _enemyList = new List<EnemyDataStore.Enemy>(GameManager.Instance.EnemyManager.GetRandomEnemyGroup().Enemies);
+
+        // 戦闘に参加している全てのキャラのコレクション初期化
+        _battleActor = new List<BattleActorData>();
+        _battleActor.AddRange(_allyList.Select(ally =>
+            CreateBattleActor(ally.Myself, _allyList.Except(new[] { ally }).Select(a => a.Myself), _enemyList.Select(e => e.Myself))));
+        _battleActor.AddRange(_enemyList.Select(enemy =>
+            CreateBattleActor(enemy.Myself, _enemyList.Except(new[] { enemy }).Select(e => e.Myself), _allyList.Select(a => a.Myself))));
     }
 
     public void TurnStart() // ターン開始時に一度だけ呼び出す。
     {
         // 行動キャラの選定（ActionCountが最も低いActorの抽出。）
-        BattleActor = BattleActor.OrderBy(a => a.Count).ToList();
+        _battleActor = BattleActor.OrderBy(a => a.Count).ToList();
         ActiveActor = BattleActor.First().Actor;
         // 全キャラのカウントタイムの更新
         var minCount = BattleActor.First().Count;
@@ -37,59 +50,59 @@ public class BattleSystem
     public bool TryGetSelectedSkill(out Actor user, out Skill selected) // 選択されたスキル取得を試みる。
     {
         user = null; selected = null;
+
+        // 選択されたオブジェクトが1つでもあるとき、0番目を選択されたスキルとして保存する。
+        var selectedList = ActiveActor.SkillData.SkillSelector.SelectedObjects;
+        if (selectedList.Count > 0)
+        {
+            SelectedSkill = selectedList[0];
+        }
+
         if (SelectedSkill == null) return false;
 
         user = ActiveActor; selected = SelectedSkill;
         return true;
     }
 
-    public void EndSkillSelectMode() // スキル選択モード終了時に一度だけ呼び出す。
-    {
-        //throw new NotImplementedException();
-    }
-
     public void StartTargetSelectMode() // ターゲット選択モード開始時に一度だけ呼び出す。
     {
-        SelectedActors = null;
+        SelectedTargets = null;
+        SelectedSkill.TargetSelecter.OnCompleted += OnSelectedTarget;
     }
 
     public bool TryGetSelectedTarget(out Skill useSkill, out List<Actor> selecteds) // 選択されたターゲット取得を試みる。
     {
         useSkill = null; selecteds = null;
-        if (SelectedActors == null) return false;
+        if (SelectedTargets == null) return false;
 
-        useSkill = SelectedSkill; selecteds = SelectedActors;
+        useSkill = SelectedSkill; selecteds = SelectedTargets;
         return true;
     }
 
-    public void EndTargetSelectMode() // ターゲット選択モード終了時に一度だけ呼び出す。
+    public void EndTargetSelectMode()
     {
-        //throw new NotImplementedException();
+        SelectedSkill.TargetSelecter.OnCompleted -= OnSelectedTarget;
     }
 
-    public void TurnEnd() // ターン終了時に一度だけ呼び出す。
+    private BattleActorData CreateBattleActor(Actor actor, IEnumerable<Actor> allies, IEnumerable<Actor> enemies)
     {
-        // 行動が終了したアクターのカウント再設定。
-
+        return new BattleActorData(actor, allies.ToList(), enemies.ToList());
     }
 
-    public void ResolveRevivalActor() // アクターの復活を処理
+    private void OnSelectedTarget(List<Actor> selected)
     {
-        throw new NotImplementedException();
-    }
-
-    public void ResolveDeathActor() // アクターの死亡を処理
-    {
-        throw new NotImplementedException();
+        SelectedTargets = selected;
     }
 }
 
 public struct BattleActorData
 {
-    public BattleActorData(Actor myself, int initialCount, List<Actor> allies, List<Actor> enemies)
+    public BattleActorData(Actor myself, List<Actor> allies, List<Actor> enemies)
     {
         if (myself == null || allies == null || enemies == null)
             throw new ArgumentNullException();
+
+        var initialCount = myself.TotalAttributeStatus.Speed; // 初期カウントの設定。
         _myself = myself; _baseCount = initialCount; _allies = allies; _enemies = enemies;
     }
 

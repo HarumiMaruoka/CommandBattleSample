@@ -125,7 +125,7 @@ public class CommandSelectObserver<T> : CommandSelectObservable<T> where T : cla
 
         return selectData;
     }
-    private void Clear(Action<T> actionTaken)
+    public void Clear(Action<T> actionTaken = null) // actionTaken は選択された全てのオブジェクトに対して実行されるアクション。
     {
         if (!_isEnabled) throw new ArgumentException("Enabledがfalseです。");
 

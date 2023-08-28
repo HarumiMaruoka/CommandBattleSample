@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using static UnityEngine.GraphicsBuffer;
 
 public abstract class Skill
 {
@@ -27,7 +28,6 @@ public abstract class Skill
 
     private readonly TargetSelecter _targetSelecter = new TargetSelecter();
     protected readonly float _effectTime; // このEffectの再生時間
-    protected float _effectTimer = 0f; // Effectを再生開始してからの経過時間
 
     // 範囲攻撃の際は半径を表す。
     // 複数選択やランダム選択攻撃に関しては攻撃対象の数を表現する。
@@ -35,31 +35,33 @@ public abstract class Skill
     private readonly int _selectCount;
 
     public string Name => _name;
+    public float EffectTime => _effectTime;
     public SelectableTargetType TargetType => _targetType;
     public TargetingType TargetingType => _targetingType;
     public TargetSelecter TargetSelecter => _targetSelecter;
     public int SelectCount => _selectCount;
-
     public event Action OnEffectComplete;
 
+    public event Action<Actor, List<Actor>> OnEffectStart;
+    public event Action<Actor, List<Actor>> OnEffectUpdate;
+    public event Action<Actor, List<Actor>> OnEffectEnd;
 
     // 効果を実装する
     // ToDo: とりあえず、攻撃、全体攻撃、防御を実装しよう
     public virtual void EffectStart(Actor user, List<Actor> targets)
     {
         // 共通処理をここに記載する。
-        _effectTimer = 0f;
+        OnEffectStart?.Invoke(user, targets);
     }
     public virtual void EffectUpdate(Actor user, List<Actor> targets)
     {
         // 共通処理をここに記載する。
-        _effectTimer += UnityEngine.Time.deltaTime;
-        if (_effectTimer > _effectTime) EffectEnd(user, targets);
+        OnEffectUpdate?.Invoke(user, targets);
     }
     public virtual void EffectEnd(Actor user, List<Actor> targets)
     {
         // 共通処理をここに記載する。
-
+        OnEffectEnd?.Invoke(user, targets);
         OnEffectComplete?.Invoke();
     }
 }

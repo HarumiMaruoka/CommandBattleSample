@@ -31,7 +31,7 @@ public class SampleActorView : MonoBehaviour
     private ActorStatus _status = ActorStatus.Alive;
 
     public event Action<ActorStatus> OnStatusChanged;
-    private int SelectedCount => _battleSystem.SelectedActors.Count(item => item == _myself);
+    private int SelectedCount => _battleSystem.SelectedTargets.Count(item => item == _myself);
 
     private bool TryGetHoveredActors(out List<Actor> hoverActors)
     {

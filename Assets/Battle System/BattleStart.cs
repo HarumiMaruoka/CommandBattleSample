@@ -8,6 +8,10 @@ public class BattleStart : StateBehavior
     {
         _controller = _stateMachine.Runner.GetComponent<StateMachineController>();
     }
+    public override void Enter()
+    {
+        _controller.BattleSystem.BattleInitialize();
+    }
     public override void Update()
     {
         Step();

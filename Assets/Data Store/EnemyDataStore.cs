@@ -5,6 +5,8 @@ public class EnemyDataStore
 {
     private readonly Dictionary<FieldType, FieldEnemyData> _fieldTypeToEnemyData = new Dictionary<FieldType, FieldEnemyData>();
 
+    public IReadOnlyDictionary<FieldType, FieldEnemyData> FieldTypeToEnemyData => _fieldTypeToEnemyData;
+
     public void Initialize(List<string[]> csv)
     {
         for (int i = 0; i < csv.Count; i++)
@@ -12,11 +14,12 @@ public class EnemyDataStore
             FieldType fieldType = csv[i][0].ToFieldType(); // どこに生息しているか
             int groupID = int.Parse(csv[i][1]); // どのグループに所属しているか（番号）
             int actorID = int.Parse(csv[i][2]); // ActorID
-            int spawnRate = int.Parse(csv[i][3]); // 出現しやすさ（この値が大きいほど出現しやすい。）
+            int level = int.Parse(csv[i][3]);
+            int spawnRate = int.Parse(csv[i][4]); // 出現しやすさ（この値が大きいほど出現しやすい。）
 
             var usableSkills = new List<int>();
 
-            for (int j = 4; j < csv[i].Length; j++)
+            for (int j = 5; j < csv[i].Length; j++)
             {
                 usableSkills.Add(int.Parse(csv[i][j])); // このエネミーが使用可能なSkillID。
             }
@@ -29,7 +32,7 @@ public class EnemyDataStore
             {
                 _fieldTypeToEnemyData[fieldType].EnemyGroups.Add(groupID, new EnemyGroup(new List<Enemy>(), spawnRate));
             }
-            _fieldTypeToEnemyData[fieldType].EnemyGroups[groupID].Enemies.Add(new Enemy(actorID, usableSkills)); // actorIDの追加。
+            _fieldTypeToEnemyData[fieldType].EnemyGroups[groupID].Enemies.Add(new Enemy(actorID, level, usableSkills)); // actorIDの追加。
         }
     }
 
@@ -60,16 +63,19 @@ public class EnemyDataStore
     }
     public struct Enemy
     {
-        public Enemy(int id, List<int> usableSkills)
+        public Enemy(int id, int level, List<int> usableSkills)
         {
-            _id = id; _usableSkillIDs = usableSkills;
+            _id = id; _level = level; _usableSkillIDs = usableSkills;
         }
 
         private readonly int _id;
+        private readonly int _level;
         private readonly List<int> _usableSkillIDs;
 
         public int Id => _id;
+        public int Level => _level;
         public List<int> UsableSkillIDs => _usableSkillIDs;
+        public Actor Myself => GameDataStore.Instance.ActorDataStore.IDToActor[_id];
     }
 }
 public enum FieldType

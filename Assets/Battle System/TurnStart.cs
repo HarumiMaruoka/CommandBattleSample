@@ -8,6 +8,10 @@ public class TurnStart : StateBehavior
     {
         _controller = _stateMachine.Runner.GetComponent<StateMachineController>();
     }
+    public override void Enter()
+    {
+        _controller.BattleSystem.TurnStart();
+    }
     public override void Update()
     {
         Step();

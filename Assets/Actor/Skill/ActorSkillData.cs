@@ -4,11 +4,11 @@ using System.Collections.Generic;
 
 public class ActorSkillData
 {
-    public ActorSkillData(Actor owner)
+    public ActorSkillData(int userID) // スキル使用者のID
     {
-        if (owner == null) throw new System.ArgumentNullException("ownerがnullです。");
-        _owner = owner;
+        _userID = userID;
     }
+
     public void Initialize()
     {
         // 最初から使用可能なスキル初期化。
@@ -16,7 +16,7 @@ public class ActorSkillData
         // このActorが習得可能な全てのスキルとSkillUnlockDataの初期化。
         var skills = new List<Skill>();
 
-        _unlockData = GameDataStore.Instance.SkillUnlockDataStore.CharacterIDToSkillUnlockData[_owner.ID];
+        _unlockData = GameDataStore.Instance.SkillUnlockDataStore.CharacterIDToSkillUnlockData[_userID];
 
         for (int i = 0; i < _unlockData.Count; i++)
         {
@@ -26,7 +26,8 @@ public class ActorSkillData
         _myAllSkill = skills;
     }
 
-    private readonly Actor _owner;
+    // スキル使用者のID
+    private readonly int _userID;
     // このActorが習得可能な全てのスキルリスト
     private List<Skill> _myAllSkill = null;
     // スキルが使用可能か表現するデータ
@@ -36,7 +37,7 @@ public class ActorSkillData
     // 戦闘の際、利用可能なスキル。
     private List<Skill> _activeSkills = new List<Skill>();
 
-    public Actor Owner => _owner;
+    public int UserID => _userID;
     public IReadOnlyList<Skill> AllSkill => _myAllSkill;
     public SkillSelector SkillSelector => _skillSelector;
 }

@@ -3,15 +3,30 @@
 /// </summary>
 public class ActorResourceStatus
 {
-    private int _maxHp;
-    private int _maxMp;
+    public ActorResourceStatus(int id, ActorLevelStatus level)
+    {
+        _id = id;
+        _level = level;
+    }
+
+    private readonly int _id;
+    private readonly ActorLevelStatus _level;
+
     private int _hp;
     private int _mp;
 
-    public int Hp { get => _hp; set => _hp = value; }
-    public int Mp { get => _mp; set => _mp = value; }
+    public int Hp => _hp;
+    public int Mp => _mp;
+    public int MaxHP => GameDataStore.Instance.LevelStatusDataStore.StatusData[new LevelData(_id, _level.Level)].MaxHP;
+    public int MaxMP => GameDataStore.Instance.LevelStatusDataStore.StatusData[new LevelData(_id, _level.Level)].MaxMP;
 
     public bool IsDead => _hp <= 0; // 体力が0以下の時このactorは死亡している事を表現する。
+
+    // 最大値に回復する。
+    public void RestoreToMaxValues()
+    {
+        _hp = MaxHP; _mp = MaxMP;
+    }
 
     public bool TryDamage(int value)
     {
@@ -19,7 +34,7 @@ public class ActorResourceStatus
 
         _hp -= value;
 
-        if (_hp > _maxHp) _hp = _maxHp;
+        if (_hp > MaxHP) _hp = MaxHP;
         else if (_hp <= 0) _hp = 0;
         return true;
     }
@@ -29,7 +44,7 @@ public class ActorResourceStatus
 
         _hp += value;
 
-        if (_hp > _maxHp) _hp = _maxHp;
+        if (_hp > MaxHP) _hp = MaxHP;
         else if (_hp <= 0) _hp = 0;
         return true;
     }
@@ -39,15 +54,15 @@ public class ActorResourceStatus
 
         var value = 0;
         if (mode == ReviveMode.Leave1) value = 1;
-        else if (mode == ReviveMode.Leave100Percent) value = _maxHp;
+        else if (mode == ReviveMode.Leave100Percent) value = MaxHP;
         else
         {
             var percent = (int)mode;
-            value = (int)((percent / 100f) * _maxHp);
+            value = (int)((percent / 100f) * MaxHP);
         }
 
         _hp = value;
-        if (_mp > _maxMp) _mp = _maxMp;
+        if (_mp > MaxMP) _mp = MaxMP;
         else if (_mp <= 0) _mp = 0;
         return true;
     }
@@ -58,7 +73,7 @@ public class ActorResourceStatus
 
         _mp += value;
 
-        if (_mp > _maxMp) _mp = _maxMp;
+        if (_mp > MaxMP) _mp = MaxMP;
         else if (_mp <= 0) _mp = 0;
         return true;
     }
@@ -72,7 +87,7 @@ public class ActorResourceStatus
 
         _mp -= value;
 
-        if (_mp > _maxMp) _mp = _maxMp;
+        if (_mp > MaxMP) _mp = MaxMP;
         else if (_mp <= 0) _mp = 0;
         return true;
     }
